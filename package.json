@@ -1,0 +1,24 @@
+{
+  "name": "scm",
+  "version": "1.0.0",
+  "description": "A project to learn springboot",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/choudhary-sameer/SCM.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/choudhary-sameer/SCM/issues"
+  },
+  "homepage": "https://github.com/choudhary-sameer/SCM#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.4"
+  }
+}
