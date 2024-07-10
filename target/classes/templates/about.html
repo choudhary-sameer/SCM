@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>This is about page.</h1>
+    <div class="host-tag" th:replace="~{base :: parent(~{::section})}">
+      <section>
+        <h2>Dynamic content</h2>
+        <p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptate,
+          voluptas eos ex modi expedita dolorum? Necessitatibus ad, ipsum id
+          accusantium eius nam voluptatem excepturi neque corporis, magni sunt.
+          Sint, voluptatibus.
+        </p>
+      </section>
+    </div>
+  </body>
+</html>

@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.ui.Model;
 
+
+
 @Controller
 public class PageController {
 
@@ -14,5 +16,19 @@ public class PageController {
         model.addAttribute("name", "Substring Technologies");
         model.addAttribute("YTChannel", "Learn Code with Sameer");
         return "home";
+    }
+
+    // about route
+    @RequestMapping("/about")
+    public String aboutPage() {
+        System.out.println("About page loading");
+        return "about";
+    }
+
+    // services route
+    @RequestMapping("/services")
+    public String servicesPage() {
+        System.out.println("Services page loading");
+        return "services";
     }
 }
