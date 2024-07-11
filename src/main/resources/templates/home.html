@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" data-th-href="@{'css/output.css'}" />
-</head>
-<body>
-    <div class="bg-gray-200 w-1/2 p-4 mx-auto mt-4">
-        <h1 class="text-2 font-bold" data-th-text="${name}">Welcome to home page</h1>
-        <p class="text-xl text-gray-600">YT Channel: <span data-th-text="${YTChannel}"></span></p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est quidem nam quibusdam a sint iure officia numquam iste iusto! Ducimus, doloribus. Optio iste architecto pariatur suscipit facilis vitae a dignissimos!</p>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title}, ~{::script})}">
+  <head>
+    <title>Home Page</title>
+  </head>
+  <body>
+    <div id="content">
+      <h1>Welcome to home page</h1>
+      <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam iste quam fugit aut suscipit quia. 
+      </p>
     </div>
-</body>
+
+    <script>
+        console.log("Home Page");
+    </script>
+  </body>
 </html>
