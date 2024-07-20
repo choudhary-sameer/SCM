@@ -2,18 +2,21 @@
 <html
   class="light"
   lang="en"
-  th:fragment="parent(content, title, script)"
+  th:fragment="parent(content,title,script)"
   xmlns:th="http://www.thymeleaf.org"
 >
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-th-replace="${title}">SCM</title>
-    <link rel="stylesheet" data-th-href="@{'css/output.css'}" />
+
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" data-th-href="@{'/css/output.css'}" />
+    <link rel="stylesheet" data-th-href="@{'/css/style.css'}" />
+
     <!-- font awesome -->
     <link
       rel="stylesheet"
@@ -23,19 +26,30 @@
       referrerpolicy="no-referrer"
     />
   </head>
-  <body class="dark:bg-gray-900 dark:text-white">
-    <!-- common header -->
-    <div data-th-replace="navbar :: navbar"></div>
+  <body class="dark:bg-gray-900 bg-gray-100 dark:text-white">
+    <!-- commom header -->
+
+    <!--  user is logged in : navbar -->
+    <div th:if="${loggedInUser}">
+      <div data-th-replace="~{user/user_navbar::user-navbar}"></div>
+    </div>
+
+    <!-- user is not logged : navbar -->
+    <div th:unless="${loggedInUser}">
+      <div data-th-replace="~{navbar :: navbar}"></div>
+    </div>
+
     <!-- main content -->
     <div class="p-4">
       <section data-th-replace="${content}"></section>
     </div>
-    <!-- flowbite content -->
+    <!-- flow bite content -->
 
-    <!-- common footer content -->
-    <footer class="p-4">Footer: Smart Contact Manager with Durgesh</footer>
+    <!-- common footer -->
+    <!-- <footer class="p-4">Footer: Learn Code With Durgesh</footer> -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script data-th-src="@{'/js/script.js'}"></script>
     <th:block data-th-replace="${script}"></th:block>
   </body>

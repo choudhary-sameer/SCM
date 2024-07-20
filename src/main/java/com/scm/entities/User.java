@@ -35,7 +35,7 @@ public class User {
     @Column(length = 10000)
     private String about;
     @Column(length = 10000)
-    private String profileLink;
+    private String profilePic;
     private String phoneNumber;
 
     // information
@@ -49,7 +49,5 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Contact> contacts = new ArrayList<>();
-
-   
 
 }

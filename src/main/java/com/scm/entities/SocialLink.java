@@ -1,7 +1,5 @@
 package com.scm.entities;
 
-import org.hibernate.annotations.DialectOverride.GeneratedColumns;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
