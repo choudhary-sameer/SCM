@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.scm.Forms.UserForm;
 import com.scm.entities.User;
+import com.scm.helpers.Message;
+import com.scm.helpers.MessageType;
 import com.scm.services.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
 
@@ -62,7 +66,7 @@ public class PageController {
 
     // Processing register
     @RequestMapping(value = "/do-register", method = RequestMethod.POST)
-    public String processRegister(@ModelAttribute UserForm userForm) {
+    public String processRegister(@ModelAttribute UserForm userForm, HttpSession session) {
         System.out.println("Processing resgistration.");
         // Fetch the form data
         // User Form
@@ -71,19 +75,32 @@ public class PageController {
         // validate form data
         // save to database
 
-        User user = User.builder()
-                .name(userForm.getName())
-                .email(userForm.getEmail())
-                .password(userForm.getPassword())
-                .about(userForm.getAbout())
-                .phoneNumber(userForm.getPhoneNumber())
-                .profilePic("https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg")
-                .build();
+        // User user = User.builder()
+        // .name(userForm.getName())
+        // .email(userForm.getEmail())
+        // .password(userForm.getPassword())
+        // .about(userForm.getAbout())
+        // .phoneNumber(userForm.getPhoneNumber())
+        // .profilePic("https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg")
+        // .build();
+
+        User user = new User();
+        user.setName(userForm.getName());
+        user.setEmail(userForm.getEmail());
+        user.setPassword(userForm.getPassword());
+        user.setAbout(userForm.getAbout());
+        ;
+        user.setPhoneNumber(userForm.getPhoneNumber());
+        user.setProfilePic("https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg");
 
         User savedUser = userService.saveUser(user);
         System.out.println("User Saved: " + savedUser);
 
         // message = 'Registration Successful'
+        // Add the message
+        Message message = Message.builder().content("Registration Successful").type(MessageType.green).build();
+        session.setAttribute("message", message);
+
         // redirect to login page
         return "redirect:/register";
     }
