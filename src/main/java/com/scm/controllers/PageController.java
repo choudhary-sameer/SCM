@@ -14,8 +14,10 @@ import com.scm.helpers.MessageType;
 import com.scm.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 @Controller
 public class PageController {
@@ -66,13 +68,17 @@ public class PageController {
 
     // Processing register
     @RequestMapping(value = "/do-register", method = RequestMethod.POST)
-    public String processRegister(@ModelAttribute UserForm userForm, HttpSession session) {
+    public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult, HttpSession session) {
         System.out.println("Processing resgistration.");
         // Fetch the form data
         // User Form
         System.out.println(userForm);
 
         // validate form data
+        if(rBindingResult.hasErrors()) {
+            return "register";
+        }
+        
         // save to database
 
         // User user = User.builder()
