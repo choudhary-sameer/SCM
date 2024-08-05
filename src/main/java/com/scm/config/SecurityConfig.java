@@ -1,16 +1,16 @@
 package com.scm.config;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.Customizer;
-
 import com.scm.services.impl.SecurityCustomUserDetailService;
 
 @Configuration
@@ -64,10 +64,44 @@ public class SecurityConfig {
             authorize.anyRequest().permitAll();
         });
 
-
         // form default login
-        // Come here if you want to change anything related to form login related 
-        httpSecurity.formLogin(Customizer.withDefaults());
+        // Come here if you want to change anything related to form login related
+        httpSecurity.formLogin(formLogin -> {
+            formLogin.loginPage("/login")
+                    .loginProcessingUrl("/authenticate")
+                    .successForwardUrl("/user/dashboard")
+                    // .failureForwardUrl("/login?error=true")
+                    .usernameParameter("email")
+                    .passwordParameter("password");
+            // .failureHandler(new AuthenticationFailureHandler() {
+
+            // @Override
+            // public void onAuthenticationFailure(HttpServletRequest request,
+            // HttpServletResponse response,
+            // AuthenticationException exception) throws IOException, ServletException {
+            // // TODO Auto-generated method stub
+            // throw new UnsupportedOperationException("Unimplemented method
+            // 'onAuthenticationFailure'");
+            // }
+            // });
+            // formLogin.successHandler(new AuthenticationSuccessHandler() {
+
+            // @Override
+            // public void onAuthenticationSuccess(HttpServletRequest request,
+            // HttpServletResponse response,
+            // Authentication authentication) throws IOException, ServletException {
+            // // TODO Auto-generated method stub
+            // throw new UnsupportedOperationException("Unimplemented method
+            // 'onAuthenticationSuccess'");
+            // }
+
+        });
+
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.logout(logoutForm -> {
+            logoutForm.logoutUrl("/do-logout");
+            logoutForm.logoutSuccessUrl("/login?logout=true");
+        });
 
         return httpSecurity.build();
     }
