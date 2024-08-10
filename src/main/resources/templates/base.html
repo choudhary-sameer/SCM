@@ -33,8 +33,8 @@
     <div th:if="${loggedInUser}">
       <div data-th-replace="~{user/user_navbar::user-navbar}"></div>
     </div>
-
-    <!-- user is not logged : navbar -->
+    
+    <!-- user is not logged in : navbar -->
     <div th:unless="${loggedInUser}">
       <div data-th-replace="~{navbar :: navbar}"></div>
     </div>

@@ -74,8 +74,8 @@ public class SecurityConfig {
         // Come here if you want to change anything related to form login related
         httpSecurity.formLogin(formLogin -> {
             formLogin.loginPage("/login")
-                    .loginProcessingUrl("/authenticate")
-                    .successForwardUrl("/user/dashboard")
+                    .loginProcessingUrl("/authentication")
+                    .successForwardUrl("/user/profile")
                     // .failureForwardUrl("/login?error=true")
                     .usernameParameter("email")
                     .passwordParameter("password");
