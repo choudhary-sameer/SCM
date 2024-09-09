@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.scm.services.ContactService;
 import com.scm.entities.Contact;
+import com.scm.entities.User;
 import com.scm.helpers.ResourceNotFoundException;
 import com.scm.repositories.ContactRepo;
 
@@ -19,10 +23,10 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public Contact save(Contact contact) {
-       String contactId = UUID.randomUUID().toString();
-       contact.setId(contactId);
+        String contactId = UUID.randomUUID().toString();
+        contact.setId(contactId);
 
-       return contactRepo.save(contact);
+        return contactRepo.save(contact);
     }
 
     @Override
@@ -33,31 +37,66 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public List<Contact> getAll() {
-       return contactRepo.findAll();
+        return contactRepo.findAll();
     }
 
     @Override
     public Contact getById(String id) {
-       return contactRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Contact not found with given id " + id));
+        return contactRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Contact not found with given id " + id));
     }
 
     @Override
     public void delete(String id) {
-        var contact = contactRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Contact not found with given id " + id));
+        var contact = contactRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Contact not found with given id " + id));
         contactRepo.delete(contact);
     }
 
     @Override
-    public List<Contact> search(String name, String email, String phoneNumber) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'search'");
+    public List<Contact> getByUserId(String userId) {
+        return contactRepo.findByUserId(userId);
     }
 
     @Override
-    public List<Contact> getByUserId(String userId) {
-       return contactRepo.findByUserId(userId);
-    }
-    
+    public Page<Contact> getByUser(User user, int page, int size, String sortBy, String direction) {
 
+        Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+        var pageable = PageRequest.of(page, size, sort);
+
+        return contactRepo.findByUser(user, pageable);
+    }
+
+    @Override
+    public Page<Contact> searchByName(String name, int size, int page, String sortBy, String order, User user) {
+
+        Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+        var pageable = PageRequest.of(page, size, sort);
+
+        return contactRepo.findByUserAndNameContaining(user, name, pageable);
+    }
+
+    @Override
+    public Page<Contact> searchByEmail(String email, int size, int page, String sortBy, String order, User user) {
+
+        Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+        var pageable = PageRequest.of(page, size, sort);
+
+        return contactRepo.findUserAndByEmailContaining(user, email, pageable);
+    }
+
+    @Override
+    public Page<Contact> searchByPhoneNumber(String phoneNumber, int size, int page, String sortBy, String order,
+            User user) {
+
+        Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+        var pageable = PageRequest.of(page, size, sort);
+
+        return contactRepo.findByUserAndPhoneNumberContaining(user, phoneNumber, pageable);
+    }
 
 }
