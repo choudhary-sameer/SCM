@@ -1,6 +1,6 @@
 console.log("Contacts.js");
 const baseURL = "http://localhost:8081";
-
+// const baseURL = "https://www.scm20.site";
 const viewContactModal = document.getElementById("view_contact_modal");
 
 // options with default values
@@ -10,7 +10,7 @@ const options = {
   backdropClasses: "bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40",
   closable: true,
   onHide: () => {
-    console.log("modal is hidden");
+    console.log("Modal is hidden.");
   },
   onShow: () => {
     setTimeout(() => {
@@ -18,13 +18,13 @@ const options = {
     }, 50);
   },
   onToggle: () => {
-    console.log("modal has been toggled");
+    console.log("Modal has been toggled.");
   },
 };
 
 // instance options object
 const instanceOptions = {
-  id: "view_contact_modal",
+  id: "view_contact_mdoal",
   override: true,
 };
 
@@ -38,10 +38,9 @@ function closeContactModal() {
   contactModal.hide();
 }
 
-// function call to load data
 async function loadContactData(id) {
+  // function call to load data
   console.log(id);
-
   try {
     const data = await (await fetch(`${baseURL}/api/contacts/${id}`)).json();
     console.log(data);
@@ -51,7 +50,7 @@ async function loadContactData(id) {
     document.querySelector("#contact_address").innerHTML = data.address;
     document.querySelector("#contact_phone").innerHTML = data.phoneNumber;
     document.querySelector("#contact_about").innerHTML = data.description;
-    const contactFavorite = document.querySelector("#contact_favorite");
+    const contactFavorite = document.querySelector("#contact_favourite");
     if (data.favorite) {
       contactFavorite.innerHTML =
         "<i class='fas fa-star text-yellow-400'></i><i class='fas fa-star text-yellow-400'></i><i class='fas fa-star text-yellow-400'></i><i class='fas fa-star text-yellow-400'></i><i class='fas fa-star text-yellow-400'></i>";
@@ -67,4 +66,23 @@ async function loadContactData(id) {
   } catch (error) {
     console.log("Error: ", error);
   }
+}
+
+// Delete contact
+async function deleteContact(id) {
+  Swal.fire({
+    title: "Do you want to delete this contact?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "No, cancel!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const url = `${baseURL}/user/contacts/delete/` + id;
+      window.location.replace(url);
+    }
+  });
 }
