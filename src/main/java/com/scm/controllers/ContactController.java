@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -134,7 +135,7 @@ public class ContactController {
     // Search Handler
     @RequestMapping("/search")
     public String searchHandler(
-           @ModelAttribute ContactSearchForm contactSearchForm,
+            @ModelAttribute ContactSearchForm contactSearchForm,
             @RequestParam(value = "size", defaultValue = AppConstants.PAGE_SIZE + "") int size,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "sortBy", defaultValue = "name") String sortBy,
@@ -148,11 +149,14 @@ public class ContactController {
 
         Page<Contact> pageContact = null;
         if (contactSearchForm.getField().equalsIgnoreCase("name")) {
-            pageContact = contactService.searchByName(contactSearchForm.getValue(), size, page, sortBy, direction, user);
+            pageContact = contactService.searchByName(contactSearchForm.getValue(), size, page, sortBy, direction,
+                    user);
         } else if (contactSearchForm.getField().equalsIgnoreCase("email")) {
-            pageContact = contactService.searchByEmail(contactSearchForm.getValue(), size, page, sortBy, direction, user);
+            pageContact = contactService.searchByEmail(contactSearchForm.getValue(), size, page, sortBy, direction,
+                    user);
         } else if (contactSearchForm.getField().equalsIgnoreCase("phone")) {
-            pageContact = contactService.searchByPhoneNumber(contactSearchForm.getValue(), size, page, sortBy, direction, user);
+            pageContact = contactService.searchByPhoneNumber(contactSearchForm.getValue(), size, page, sortBy,
+                    direction, user);
         }
 
         logger.info("pageContact: {}", pageContact);
@@ -170,8 +174,79 @@ public class ContactController {
         contactService.delete(contactId);
         logger.info("contactId {} deleted", contactId);
 
-        session.setAttribute("message", Message.builder().content("Contact is deleted successfully !!").type(MessageType.green).build());
+        session.setAttribute("message",
+                Message.builder().content("Contact is deleted successfully !!").type(MessageType.green).build());
 
         return "redirect:/user/contacts";
     }
+
+    // Update Contact form View
+    @GetMapping("/view/{contactId}")
+    public String updateContactFormView(
+            @PathVariable("contactId") String contactId,
+            Model model) {
+
+        var contact = contactService.getById(contactId);
+
+        ContactForm contactForm = new ContactForm();
+        contactForm.setName(contact.getName());
+        contactForm.setEmail(contact.getEmail());
+        contactForm.setPhoneNumber(contact.getPhoneNumber());
+        contactForm.setAddress(contact.getAddress());
+        contactForm.setDescription(contact.getDescription());
+        contactForm.setFavourite(contact.isFavourite());
+        contactForm.setWebsiteLink(contact.getWebsiteLink());
+        contactForm.setLinkedInLink(contact.getLinkedInLink());
+        contactForm.setPicture(contact.getPicture());
+
+        model.addAttribute("contactForm", contactForm);
+        model.addAttribute("contactId", contactId);
+
+        return "user/update_contact_view";
+    }
+
+    @RequestMapping(value = "/update/{contactId}", method = RequestMethod.POST)
+    public String updateContact(
+            @PathVariable("contactId") String contactId,
+            @Valid @ModelAttribute ContactForm contactForm,
+            BindingResult bindingResult,
+            Model model, HttpSession session) {
+
+        // Update the contact
+        if(bindingResult.hasErrors()) {
+            return "user/update_contact_view";
+        }
+
+        var con = new Contact();
+        con.setId(contactId);
+        con.setName(contactForm.getName());
+        con.setEmail(contactForm.getEmail());
+        con.setPhoneNumber(contactForm.getPhoneNumber());
+        con.setAddress(contactForm.getAddress());
+        con.setDescription(contactForm.getDescription());
+        con.setFavourite(contactForm.isFavourite());
+        con.setWebsiteLink(contactForm.getWebsiteLink());
+        con.setLinkedInLink(contactForm.getLinkedInLink());
+
+        // Process Image
+        if (contactForm.getContactImage() != null && !contactForm.getContactImage().isEmpty()) {
+            String fileName = UUID.randomUUID().toString();
+            String imageURL = imageService.uploadImage(contactForm.getContactImage(), fileName);
+            con.setCloudinaryImagePublicId(fileName);
+            con.setPicture(imageURL);
+            contactForm.setPicture(imageURL);
+        } else {
+            logger.info("File is empty.");
+        }
+
+        var updatedCon = contactService.update(con);
+        logger.info("Upload contact {}", updatedCon);
+
+        session.setAttribute("message",
+                Message.builder().content("Contact updated !!").type(MessageType.green).build());
+
+        return "redirect:/user/contacts/view/" + contactId;
+
+    }
+
 }

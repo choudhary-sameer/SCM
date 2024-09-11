@@ -71,10 +71,14 @@ async function loadContactData(id) {
 // Delete contact
 async function deleteContact(id) {
   Swal.fire({
-    title: "Do you want to delete this contact?",
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonText: "Delete",
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No, cancel!",
+    confirmButtonText: "Yes, delete it!",
   }).then((result) => {
     if (result.isConfirmed) {
       const url = `${baseURL}/user/contacts/delete/` + id;
